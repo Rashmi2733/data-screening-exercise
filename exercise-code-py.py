@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 #Loading the provided dataset by skiping first six rows of data present in csv (using the windows-1252 encoding since th default utf8 did gave an error)
 df = pd.read_csv("messy_ice_detention.csv", skiprows=6, encoding='cp1252')
@@ -109,9 +110,9 @@ df.loc[6, "Name"]
 def top_graphs(df, col_name, xvalue):
     top_df = df[col_name].value_counts().reset_index().head(10)
     plt.bar(top_df[col_name], top_df['count'], color = 'green')
-    plt.xlabel(f"{xvalue}")
-    plt.ylabel("Count")
-    plt.title(f"Top 10 {xvalue} with Detention Facilities")
+    plt.xlabel(f"{xvalue}", fontweight='bold')
+    plt.ylabel("Count", fontweight='bold')
+    plt.title(f"Top 10 {xvalue} with Detention Facilities", fontweight='bold')
     plt.xticks(rotation = 90)
     plt.grid()
     plt.show()
@@ -124,22 +125,30 @@ df.sample(5)
 #Getting top 10 detention facilities based on total population
 df_10 = df.sort_values(by='Total Population', ascending=False).head(10)
 df_10
-#Plotting top 10 facilities based on population
-plt.barh(df_10['Name'], df_10['Total Population'])
-plt.ylabel("Detention Facility")
-plt.xlabel("Total Population")
-plt.title(f"Top 10 Detention Facilities according to population")
-plt.gca().invert_yaxis()
-plt.grid()
+
+# #Plotting top 10 Facilities based on population
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(12, 5))
+
+ax = sns.barplot(data=df_10, y="Name", x="Total Population", orient="h", color ='orange')
+ax.set_ylabel("Detention Facility", fontweight="bold")
+ax.set_xlabel("Total Population", fontweight="bold")
+ax.set_title("Top 10 Detention Facilities by Population", fontweight="bold")
+ax.tick_params(axis="y", labelsize=10)
+plt.tight_layout()
 plt.show()
+
 #Getting the top states with total population
 top_10_states = df.groupby('StateName')[['Total Population']].sum().reset_index().sort_values(by="Total Population", ascending = False).head(10)
 top_10_states
-#Plotting top 10 States based on population
-plt.bar(top_10_states['StateName'], top_10_states['Total Population'])
-plt.xlabel("State")
-plt.ylabel("Total Population")
-plt.title(f"Top 10 States according to population")
-plt.xticks(rotation=90)
-plt.grid()
+
+
+# #Plotting top 10 States based on population
+plt.figure(figsize=(12, 5))
+
+ax = sns.barplot(data=top_10_states, y="StateName", x="Total Population", color ='grey')
+ax.set_ylabel("Total Population", fontweight="bold")
+ax.set_xlabel("State", fontweight="bold")
+ax.set_title("Top 10 States By Population", fontweight="bold")
+plt.tight_layout()
 plt.show()
