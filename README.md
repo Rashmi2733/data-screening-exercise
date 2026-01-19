@@ -12,4 +12,4 @@ Beyond this, the graph [top-10-facilities-by-population-of-levels](top-10-facili
 
 Further, the top 10 states with highest population was also found with the graph provided in the repository ([top-10-states-by-population](top-10-states-by-population.png)), with Texas being at the top, followed by Louisiana, showing comparative results to the previous graph. 
 
-When we look at the population for the different months, we see the highest populations for January and December and lowest from April to August(this is overall population for all years provided) [monthly-population](monthly-population.png). 
+When we look at the population for the different months, we see the highest populations for January and December and lowest from April to August (this is overall population for all years provided) ([monthly-population](monthly-population.png)). 
