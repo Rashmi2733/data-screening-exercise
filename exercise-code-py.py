@@ -123,6 +123,27 @@ df.loc[6, "Name"]
 #Replacing short forms
 df['Name'] = df['Name'].str.replace(" DET ", ' DETENTION ')
 
+#Changing the Last Inspection End Date column from days since 1900-01-01 (common excel start count) to actual dates 
+#Note that this is a tentative conversion since we are not sure if the system used was 1900 date sytem or the 1904 date system
+
+print(df[82:87])
+#Starting by replacing the one date value into number of days (9/19/2024)
+date_to_change = pd.to_datetime("2024-09-19") 
+number_days = (date_to_change - pd.Timestamp("1899-12-30")).days 
+##We use Jan 30 1899 due to the bug present in excel which considers 1900 a leap year (when it is not) (As per this article: https://sachinlearns.medium.com/the-100-year-bug-microsoft-never-fixed-how-excel-still-carries-a-mistake-from-the-1980s-5fe4dcaedc7d) 
+print("Converted date:",number_days)
+
+#Changing date to days
+df.loc[85, 'Last Inspection End Date'] = str(number_days)
+print(df[85:86])
+
+#Changing all number of days into dates
+df["Last Inspection End Date"] = df["Last Inspection End Date"].astype("Int64")
+df["Last Inspection End Date"] = pd.to_datetime(df["Last Inspection End Date"], unit="D", origin="1899-12-30", errors="coerce")
+#We add the same origin date as before
+
+print(df['Last Inspection End Date'].sample(3))
+
 
 #Simple EDA
 
@@ -189,5 +210,27 @@ ax = sns.barplot(data=top_10_states, y="StateName", x="Total Population", color 
 ax.set_ylabel("Total Population", fontweight="bold")
 ax.set_xlabel("State", fontweight="bold")
 ax.set_title("Top 10 States By Population", fontweight="bold")
+plt.tight_layout()
+plt.show()
+
+
+#Getting the last inpection months and years
+df['Last Inspection End Year'] = df['Last Inspection End Date'].dt.year
+df['Last Inspection End Month'] = df['Last Inspection End Date'].dt.month
+
+#Getting the total popluation for different months (overall)
+monthly_df = df.groupby(['Last Inspection End Month'])['Total Population'].sum().reset_index().sort_values(by='Last Inspection End Month')
+monthly_df['Last Inspection End Month'] = monthly_df['Last Inspection End Month'].astype(int)
+monthly_df
+
+# #Plotting Monthly Population (for all Years)
+plt.figure(figsize=(12, 5))
+
+ax = sns.lineplot(data=monthly_df, y="Total Population", x="Last Inspection End Month", color = 'red')
+ax.set_xlabel("Month", fontweight="bold")
+ax.set_ylabel("Total Population", fontweight="bold")
+ax.set_title("Monthly Population (for all Years)", fontweight="bold")
+ax.tick_params(axis="y", labelsize=12)
+ax.tick_params(axis="x", labelsize=12)
 plt.tight_layout()
 plt.show()
